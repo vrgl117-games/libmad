@@ -34,6 +34,8 @@ typedef   signed long mad_fixed64hi_t;
 typedef unsigned long mad_fixed64lo_t;
 # endif
 
+# define FPM_MIPS
+
 # if defined(_MSC_VER)
 #  define mad_fixed64_t  signed __int64
 # elif 1 || defined(__GNUC__)
@@ -303,9 +305,11 @@ mad_fixed_t mad_f_mul_inline(mad_fixed_t x, mad_fixed_t y)
  * This MIPS version is fast and accurate; the disposition of the least
  * significant bit depends on OPT_ACCURACY via mad_f_scale64().
  */
+// See https://github.com/nuviktor/mandelspawn/blob/master/mslaved/ms_real.c#L104
 #  define MAD_F_MLX(hi, lo, x, y)  \
-    asm ("mult	%2,%3"  \
-	 : "=l" (lo), "=h" (hi)  \
+    asm ("mult	%2,%3\n\t"  \
+	 "mfhi %1"  \
+	 : "=l" (lo), "=r" (hi)  \
 	 : "%r" (x), "r" (y))
 
 # if defined(HAVE_MADD_ASM)

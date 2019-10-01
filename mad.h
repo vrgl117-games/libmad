@@ -24,7 +24,7 @@
 extern "C" {
 # endif
 
-# define FPM_INTEL
+# define FPM_MIPS
 
 
 
@@ -348,8 +348,10 @@ mad_fixed_t mad_f_mul_inline(mad_fixed_t x, mad_fixed_t y)
  * This MIPS version is fast and accurate; the disposition of the least
  * significant bit depends on OPT_ACCURACY via mad_f_scale64().
  */
+// See https://github.com/nuviktor/mandelspawn/blob/master/mslaved/ms_real.c#L104
 #  define MAD_F_MLX(hi, lo, x, y)  \
-    asm ("mult	%2,%3"  \
+    asm ("mult	%2,%3\n\t"  \
+	 "mfhi %1"  \
 	 : "=l" (lo), "=h" (hi)  \
 	 : "%r" (x), "r" (y))
 
